@@ -10,6 +10,13 @@ app.get('/', (req, res) => res.sendFile(homePage));
 const reactApp= path.join(__dirname, 'dist/main.js')
 app.get('/dist/main.js', (req, res) => res.sendFile(reactApp));
 
+const reactSourceMap= path.join(__dirname, 'dist/main.js.map')
+app.get('/dist/main.js.map', (req, res) => res.sendFile(reactSourceMap));
+
+
+const styleSheet= path.join(__dirname, 'style.css')
+app.get('/style.css', (req, res) => res.sendFile(styleSheet));
+
 
 const start = async() => {
     await client.connect();

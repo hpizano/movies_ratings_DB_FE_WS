@@ -1,6 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
+
+const App = () => {
+    
+    return (
+        <h1> Full Stack Template</h1>
+    );
+};
 
 const root = ReactDOM.createRoot(document.querySelector('#root'));
-
-root.render(React.createElement('hr'));
+root.render(<App />);
