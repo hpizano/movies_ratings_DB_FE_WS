@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const App = () => {
     const [movies, setMovies] = useState([]);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchMovies = async() => {
@@ -14,34 +15,44 @@ const App = () => {
     }, []);
 
     const increaseRating = async(movie) => {
-        const newRating = movie.stars + 1 ;
-        const {data} = await axios.put(`/api/movies/${movie.id}`, {name: movie.name, stars: newRating}) ;
-        const newMovies = movies.map((movieMap) => {
-            if(movieMap.id === movie.id) {
-                return data
-            } else {
-                return movieMap;
-            };
-        });
-        setMovies(newMovies);
+        try {
+            setError('');
+            const newRating = movie.stars + 1 ;
+            const response = await axios.put(`/api/movies/${movie.id}`, {name: movie.name, stars: newRating}) ;
+            const newMovies = movies.map((movieMap) => {
+                if(movieMap.id === movie.id) {
+                    return response.data
+                } else {
+                    return movieMap;
+                };
+            });
+            setMovies(newMovies);  
+        } catch(error) {
+            setError(error.response.data);
+        }
     };
 
     const decreaseRating = async (movie) => {
-        const newRating = movie.stars - 1 ;
-        const {data} = await axios.put(`/api/movies/${movie.id}`, {name: movie.name, stars: newRating});
-        const newMovies = movies.map((movieMap) => {
-            if(movieMap.id === movie.id) {
-                return data
-            } else {
-                return movieMap;
-            };
-        });
-        setMovies(newMovies);
+        try{
+            setError('');
+            const newRating = movie.stars - 1 ;
+            const response = await axios.put(`/api/movies/${movie.id}`, {name: movie.name, stars: newRating});
+            const newMovies = movies.map((movieMap) => {
+                if(movieMap.id === movie.id) {
+                    return response.data
+                } else {
+                    return movieMap;
+                };
+            });
+            setMovies(newMovies);
+        } catch(error) {
+            setError(error.response.data);
+        }
     };
 
     return (
         <div>
-          <h1> Rate the movie! ({movies.length})</h1>
+          <h1 className='title'> Rate the movie! ({movies.length})</h1>
           <div>
             <ul>
                 {
@@ -50,18 +61,20 @@ const App = () => {
                             <li key={movie.id}>                                
                                 <h2>{movie.name}</h2>
                                 <span>
-                                <h3> Rating: {movie.stars} Stars </h3>
-                                <button onClick= { () => {increaseRating(movie)}}> + </button>
-                                <button onClick={() => {decreaseRating(movie)}}> - </button>
+                                  <h3> Rating: {movie.stars} Stars </h3>
+                                  <button onClick= {() => {increaseRating(movie)}}> + </button>
+                                  <button onClick={() => {decreaseRating(movie)}}> - </button>
+                                  <p>{error? error : " "}</p>
                                 </span>
                                 <div>
-                                <button> Delete </button>
+                                  <button onClick={() => {}}> Delete </button>
                                 </div>
+                                <hr/>
                             </li>
-                        
                         )
                     })
                 }
+               
             </ul>
           </div>
         </div>

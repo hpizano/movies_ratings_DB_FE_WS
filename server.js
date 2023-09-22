@@ -37,6 +37,9 @@ app.get('/api/movies', async(req, res, next) => {
 //PUT /api/movies/:id
 app.put('/api/movies/:id', async(req, res, next) => {
     try {
+        if(req.body.stars < 1 || req.body.stars > 5) {
+            throw new Error("Invalid Rating");
+        }
         const SQL =`
         UPDATE movies
         SET name = $1, stars = $2
@@ -49,6 +52,25 @@ app.put('/api/movies/:id', async(req, res, next) => {
         next(error);
     };
 });
+
+//DELETE
+app.delete('/api/movies/:id', async(rez,res,next) =>{
+    try{
+        const SQL =`
+        DELETE FROM movies
+        WHERE id = $1
+        `;
+        const response = await client.query(SQL, [req.params.id]);
+        res.send(response);
+    }catch(error){
+        next(error);
+    }
+})
+
+//ERROR handler
+app.use((err,req,res,next) => {
+    res.status(500).send(err.message);
+})
 
 const start = async() => {
     await client.connect();
