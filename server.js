@@ -2,6 +2,13 @@ const pg = require('pg');
 const client = new pg.Client('postgres://localhost/movie_ratings_db');
 const express = require('express');
 const app = express();
+const path = require('path');
+
+const homePage = path.join(__dirname, 'index.html')
+app.get('/', (req, res) => res.sendFile(homePage));
+
+const reactApp= path.join(__dirname, 'dist/main.js')
+app.get('/dist/main.js', (req, res) => res.sendFile(reactApp));
 
 
 const start = async() => {
